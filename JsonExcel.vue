@@ -46,6 +46,7 @@ export default {
     title: {
       default: null
     },
+    // Add custom header
     header: {
       type: Array,
       default: () => []
@@ -151,6 +152,7 @@ export default {
               let thColSpan = 1;
               if (typeof head === 'object') {
                 thColSpan = head.colspan ? head.colspan : 1
+                thColSpan = thColSpan > totalField ? totalField : thColSpan
                 if (thColSpan > 1) {
                   xlsData += `<th colspan="${thColSpan > 1 ? thColSpan : ''}">${head.text || ''}</th>`;
                 } else {
@@ -169,7 +171,13 @@ export default {
       //Fields
       xlsData += "<tr>";
       for (let key in data[0]) {
-        xlsData += "<th>" + key + "</th>";
+        let text = '';
+        if (typeof this.fields[key] === 'object'){
+          text = this.fields[key].alias || key
+        } else {
+          text = key
+        }
+        xlsData += `<th>${text}</th>`;
       }
       xlsData += "</tr>";
       xlsData += "</thead>";
