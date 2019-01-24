@@ -46,6 +46,10 @@ export default {
     title: {
       default: null
     },
+    header: {
+      type: Array,
+      default: () => []
+    },
     // Footer(s) for the data, could be a string or an array of strings (multiple footers)
     footer: {
       default: null
@@ -133,6 +137,33 @@ export default {
           this.title,
           '<tr><th colspan="' + colspan + '">${data}</th></tr>'
         );
+      }
+
+      //Custom Header
+      if (this.header.length > 0) {
+        let totalField = colspan;
+        xlsData += "<tr>";
+        
+        for (let i = 0; i < this.header.length; i++) {
+          if (totalField > 0){
+            if (this.header[i]){
+              let head = this.header[i]
+              let thColSpan = 1;
+              if (typeof head === 'object') {
+                thColSpan = head.colspan ? head.colspan : 1
+                if (thColSpan > 1) {
+                  xlsData += `<th colspan="${thColSpan > 1 ? thColSpan : ''}">${head.text || ''}</th>`;
+                } else {
+                  xlsData += "<th>" + head + "</th>";
+                }
+              } else {
+                xlsData += "<th>" + head + "</th>";
+              }
+              totalField = totalField - thColSpan 
+            } 
+          }
+        }
+        xlsData += "</tr>";
       }
 
       //Fields
